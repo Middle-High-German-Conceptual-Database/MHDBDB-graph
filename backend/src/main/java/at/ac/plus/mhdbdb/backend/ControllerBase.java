@@ -10,8 +10,13 @@ import java.util.function.Consumer;
 
 import org.eclipse.rdf4j.query.QueryLanguage;
 import org.eclipse.rdf4j.query.TupleQuery;
+import org.eclipse.rdf4j.query.algebra.Str;
 import org.eclipse.rdf4j.query.resultio.sparqljson.SPARQLResultsJSONWriter;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
+import org.eclipse.rdf4j.repository.base.AbstractRepository;
+import org.eclipse.rdf4j.repository.http.HTTPRepository;
+import org.eclipse.rdf4j.repository.http.config.HTTPRepositoryFactory;
+import org.eclipse.rdf4j.repository.sparql.SPARQLRepository;
 import org.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +26,10 @@ import org.springframework.beans.factory.annotation.Value;
 import com.ontotext.graphdb.repository.http.GraphDBHTTPRepository;
 import com.ontotext.graphdb.repository.http.GraphDBHTTPRepositoryBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.jena.query.QueryExecution;
+import org.apache.jena.rdfconnection.RDFConnection;
+import org.apache.jena.rdfconnection.RDFConnectionFuseki;
+import org.apache.jena.rdfconnection.RDFConnectionRemoteBuilder;
 
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -34,8 +43,11 @@ public class ControllerBase {
     @Value("${target.host}")
     protected String targetHost;
 
-    @Value("${target.repository}")
+    @Value("${target.repository:dhPLUS}")
     protected String targetRepository;
+
+    @Value("${target.host.engine:graphdb}")
+    protected String targetHostEngine;
 
     @Autowired 
     Consumer<HttpClientBuilder> httpClientBuilderConsumer;
@@ -54,6 +66,36 @@ public class ControllerBase {
         return String.join("\n", prefixes);
     }
 
+    // TODO: This could or should be a bean...
+    /**
+     * creates and returns the repository connection according to the target.host settings
+     * This will be a connection to either a {@link GraphDBHTTPRepository} or a {@link SPARQLRepository}
+     * @return a connection to the repository
+     */
+    protected RepositoryConnection getRepositoryConnection() {
+        RepositoryConnection connection = null;
+        AbstractRepository repo = null;
+        switch (targetHostEngine) {
+            case "fuseki":
+                // TODO: we will prolly need to deal with self signed certificates at some point...
+                // and maybe think about HTTPRepository?
+                // see https://rdf4j.org/documentation/programming/repository/
+                repo = new SPARQLRepository(targetHost);
+                connection = repo.getConnection();
+                break;
+        
+            default:
+                repo = new GraphDBHTTPRepositoryBuilder()
+                    .withServerUrl(targetHost)
+                    .withRepositoryId(targetRepository)
+                    .withHttpClientSetup(httpClientBuilderConsumer)
+                    .build();
+                connection = repo.getConnection();
+                break;
+        }
+        return connection;
+    }
+
     /**
      * Run the query and flush the resutls directly to the requests response
      * @param response the <code>HttpServletResponse</code> used to return the query results (to the browser / requester)
@@ -64,13 +106,7 @@ public class ControllerBase {
     protected void runQuery(HttpServletResponse response, String query) 
     throws JSONException, IOException {
         logger.info("ControllerBase.runQuery query:\n {}", query);
-        GraphDBHTTPRepository repository = new GraphDBHTTPRepositoryBuilder()
-            .withServerUrl(targetHost)
-            .withRepositoryId(targetRepository)
-            .withHttpClientSetup(httpClientBuilderConsumer)
-            .build();
-        RepositoryConnection connection = repository.getConnection();
-
+        RepositoryConnection connection = getRepositoryConnection();
         TupleQuery tupleQuery = connection.prepareTupleQuery(QueryLanguage.SPARQL, query);
         try {
             OutputStream result = response.getOutputStream();

@@ -269,7 +269,7 @@ export class WorkService extends MhdbdbIdLabelEntityService<WorkQueryParameterI,
     console.log("WorkService._sparqlQuery", {qp, countResults})
 
     let authorFilter = `{
-      ?id dhpluso:contribution/dhpluso:agent ?authorIdA .
+      ?idA dhpluso:contribution/dhpluso:agent ?authorIdA .
       ?authorIdA rdfs:label ?authorLabelA .
     }`;
     if (qp.filter.isAuthorIdsActive && qp.filter.authorIds.length > 0) {
@@ -281,7 +281,7 @@ export class WorkService extends MhdbdbIdLabelEntityService<WorkQueryParameterI,
     }`;
     }
 
-    let instanceSelector = `?id a dhpluso:Text ;
+    let instanceSelector = `?idA a dhpluso:Text ;
                                     dhpluso:hasExpression ?textA .
                                 ?textA a dhpluso:Text .
                                 ?electronic dhpluso:instanceOf ?textA ;
@@ -290,7 +290,7 @@ export class WorkService extends MhdbdbIdLabelEntityService<WorkQueryParameterI,
                                 {
                                     ?textA dhpluso:hasInstance ?instanceA
                                 }
-                                ?id rdfs:label ?labelA .
+                                ?idA rdfs:label ?labelA .
                                 
                                 filter(langMatches( lang(?authorLabelA), "${qp.lang}" ))
                                 filter(langMatches( lang(?labelA), "${qp.lang}" ))
@@ -302,7 +302,7 @@ export class WorkService extends MhdbdbIdLabelEntityService<WorkQueryParameterI,
 
     let instanceSelect = '';
 
-    instanceSelect = ` DISTINCT (SAMPLE(?id) AS ?id) (SAMPLE(?labelA) as ?label) (?textA AS ?text) 
+    instanceSelect = ` DISTINCT (SAMPLE(?idA) AS ?id) (SAMPLE(?labelA) as ?label) (?textA AS ?text) 
                 (SAMPLE(?instanceA) AS ?instance) (SAMPLE(?authorLabelA) AS ?authorLabel) (SAMPLE(?authorIdA) AS ?authorId)
                 WHERE {
                     ${labelQuery}

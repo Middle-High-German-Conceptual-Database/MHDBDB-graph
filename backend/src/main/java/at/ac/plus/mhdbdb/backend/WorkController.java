@@ -148,6 +148,7 @@ public class WorkController extends ControllerBase {
         runQuery(response, query);
     }
 
+    /*
     protected TupleQuery loadQuery(String query)
     throws JSONException, IOException {
         logger.info("WorkController.loadQuery query:\n {}", query);
@@ -159,4 +160,5 @@ public class WorkController extends ControllerBase {
 
         return connection.prepareTupleQuery(QueryLanguage.SPARQL, query);
     }
+     */
 }

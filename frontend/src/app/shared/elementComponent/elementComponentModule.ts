@@ -25,7 +25,7 @@ import { PlaceElementComponent } from './place-element/place-element.component';
 import { WorkElementComponent } from './work-element/work-element.component';
 import { DictionaryElementComponent } from './dictionary-element/dictionary-element.component';
 import { ConceptElementComponent } from './concept-element/concept-element.component';
-import { OnomasticsElementComponent } from './onomastics-element/onomastics-element.component';
+//import { OnomasticsElementComponent } from './onomastics-element/onomastics-element.component';
 import { TextElementComponent } from 'app/shared/elementComponent/text-element/text-element.component';
 import { MHDBDBViewWidgetsModule } from 'app/shared/viewWidgets/viewWidgetsModule';
 import { MHDBDBFormModule } from 'app/shared/formComponents/formModule';
@@ -37,7 +37,7 @@ import { MHDBDBFormModule } from 'app/shared/formComponents/formModule';
     WorkElementComponent,
     DictionaryElementComponent,
     ConceptElementComponent,
-    OnomasticsElementComponent,
+    //OnomasticsElementComponent,
     TextElementComponent
   ],
   declarations: [
@@ -46,7 +46,7 @@ import { MHDBDBFormModule } from 'app/shared/formComponents/formModule';
     WorkElementComponent,
     DictionaryElementComponent,
     ConceptElementComponent,
-    OnomasticsElementComponent,
+    //OnomasticsElementComponent,
     TextElementComponent
   ],
   imports: [
@@ -82,7 +82,7 @@ import { MHDBDBFormModule } from 'app/shared/formComponents/formModule';
     WorkElementComponent,
     DictionaryElementComponent,
     ConceptElementComponent,
-    OnomasticsElementComponent,
+    //OnomasticsElementComponent,
     TextElementComponent
   ]
 })

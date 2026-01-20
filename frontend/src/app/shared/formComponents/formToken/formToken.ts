@@ -24,7 +24,7 @@ import { PosService } from '../../pos/pos.service';
 import { Store, select } from '@ngrx/store';
 import { selectTokenFilterById } from 'app/store/filter.reducer';
 import { updateFilterById } from 'app/store/filter.actions';
-import { OnomasticsService } from 'app/onomastics/onomastics.service';
+//import { OnomasticsService } from 'app/onomastics/onomastics.service';
 import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import {SkosConceptI} from "app/shared/baseIndexComponent/baseindexcomponent.class";
 
@@ -56,7 +56,7 @@ export class FormTokenComponent implements OnInit, OnDestroy {
   @Input() tokenFilter;
   @Input() filter: any;
   advancedSearch = false;
-  isNamenActive = false;
+  //isNamenActive = false;
   public he: ListHistoryEntry<TextPassageQueryParameterI, TextPassageFilterI, TextPassageOptionsI, TextPassage>;
   isLoading: boolean = false;
   notifier = new Subject();
@@ -72,7 +72,7 @@ export class FormTokenComponent implements OnInit, OnDestroy {
   removable = true;
   addOnBlur = true;
   visible = true;
-
+  /*
   public onomasticForm: FormGroup;
 
   onomasticCtrl = new FormControl();
@@ -81,6 +81,7 @@ export class FormTokenComponent implements OnInit, OnDestroy {
   public filterOnomastics: FormGroup;
   public onomasticsLabels: string[] = [];
   @ViewChild('onomasticInput', { static: false }) onomasticInput: ElementRef<HTMLInputElement>;
+  */
 
   constructor(
     public historyService: HistoryService<TextPassageQueryParameterI, TextPassageFilterI, TextPassageOptionsI, TextPassage>,
@@ -88,7 +89,7 @@ export class FormTokenComponent implements OnInit, OnDestroy {
     public TextPassageService: TextPassageService,
     public service: tokenFormService,
     public store: Store,
-    public conceptService: OnomasticsService
+    //public conceptService: OnomasticsService
   ) { }
 
   openHelp() {
@@ -114,6 +115,7 @@ export class FormTokenComponent implements OnInit, OnDestroy {
     });
   }
 
+  /*
   get onomastics() {
     return <FormGroup>this.onomasticForm.get('filterOnomastics');
   }
@@ -128,6 +130,7 @@ export class FormTokenComponent implements OnInit, OnDestroy {
     this.onomasticInput.nativeElement.value = '';
     this.onomasticCtrl.setValue(null);
   }
+  */
 
   addForm() {
     this.service.qp.filter.tokenFilters.push(defaultTokenFilter);
@@ -150,12 +153,14 @@ export class FormTokenComponent implements OnInit, OnDestroy {
     this.store.dispatch(updateFilterById({ filterId: this.filter.id, newFilter: updatedFilter }));
   }
 
+  /*
   setNamenChecked(e: MatSlideToggleChange) {
     this.isNamenActive = e.checked;
 
     const updatedFilter = { ...this.tokenFilter, isNamenActive: e.checked };
     this.store.dispatch(updateFilterById({ filterId: this.filter.id, newFilter: updatedFilter }));
   }
+  */
 
   moveForm(shift, currentIndex) {
     let newIndex: number = currentIndex + shift;
@@ -175,14 +180,17 @@ export class FormTokenComponent implements OnInit, OnDestroy {
     this.moveForm(1, index);
   }
 
+  /*
   private _filterOnomastic(value: string): string[] {
     const filterValue = value.toLowerCase();
     return this.onomasticsLabels.filter(concept => concept.toLowerCase().indexOf(filterValue) >= 0);
   }
+  */
 
   ngOnInit() {
     this.tokenFilter = { ...this.tokenFilter } as TokenFilterI;
 
+    /*
     this.filterOnomastics = new FormGroup({});
     this.onomasticForm = new FormGroup({
       filterOnomastics: this.filterOnomastics
@@ -194,7 +202,7 @@ export class FormTokenComponent implements OnInit, OnDestroy {
         startWith(null),
         map((concept: string | null) => (concept ? this._filterOnomastic(concept) : this.onomasticsLabels.slice()))
     );
-
+    */
     this.store
       .pipe(
         select(selectTokenFilterById, { id: this.filter.id }),
@@ -202,15 +210,17 @@ export class FormTokenComponent implements OnInit, OnDestroy {
       )
       .subscribe(tokenFilter => {
         this.advancedSearch = tokenFilter.advancedSearch;
+        /*
         this.isNamenActive = tokenFilter.isNamenActive;
         this.tokenFilter.onomastics = tokenFilter.onomastics;
 
         this.onomasticForm.disable({ emitEvent: false }); // disable form to prevent emitting events while patching values
         this.updateOnomastics();
         this.onomasticForm.enable({ emitEvent: false }); // re-enable form after patching values
-
+        */
       });
 
+    /*
     let tempOnomastics = [];
 
     this.onomasticForm.valueChanges.pipe(distinctUntilChanged()).subscribe(value => {
@@ -225,6 +235,7 @@ export class FormTokenComponent implements OnInit, OnDestroy {
       this.tokenFilter = updatedFilter;
         this.store.dispatch(updateFilterById({filterId: this.filter.id, newFilter: updatedFilter}));
     });
+    */
 
     /*this.historyService.history.pipe(takeUntil(this.notifier)).subscribe(historyMap => {
       this.he = this.historyService.getListHistoryEntry(this.routeString);
@@ -237,7 +248,7 @@ export class FormTokenComponent implements OnInit, OnDestroy {
     });*/
   }
 
-
+  /*
   updateOnomastics() {
     if (this.onomasticsList && this.onomasticsList.length == 0) {
       this.conceptService.getRealAllConcepts().then(data => {
@@ -255,6 +266,7 @@ export class FormTokenComponent implements OnInit, OnDestroy {
       });
     }
   }
+  */
 
   ngOnDestroy(): void {
     /*if (this.subscriptionQueryHistory) {

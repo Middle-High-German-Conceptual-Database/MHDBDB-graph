@@ -29,11 +29,13 @@ export const routes: Routes = [
     loadChildren: () => import('./concept/concept.module').then(m => m.ConceptModule),
     runGuardsAndResolvers: 'always'
   },
+  /*
   {
     path: 'onomastics',
     loadChildren: () => import('./onomastics/onomastics.module').then(m => m.OnomasticsModule),
     runGuardsAndResolvers: 'always'
   },
+  */
   {
     path: 'indices/person',
     loadChildren: () => import('./indices/person/person.module').then(m => m.PersonModule),

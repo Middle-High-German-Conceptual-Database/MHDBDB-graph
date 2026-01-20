@@ -148,7 +148,7 @@ export class TextListComponent extends BaseIndexListDirective<TextQueryParameter
 
     this.isLoading = false;
   }
-
+  /*
   onTabChanged(tabChangeEvent: MatTabChangeEvent, index: number): void {
     this.selectedTabIndex = tabChangeEvent.index;
     this.tokenFilters$.pipe(take(1)).subscribe(filters => {
@@ -158,6 +158,7 @@ export class TextListComponent extends BaseIndexListDirective<TextQueryParameter
       }
     });
   }
+    */
 
   scrollToBottom(): void {
     this.viewportScroller.scrollToPosition([0, document.body.scrollHeight]);
@@ -187,6 +188,7 @@ export class TextListComponent extends BaseIndexListDirective<TextQueryParameter
     this.store.dispatch(moveTokenFilterDown({ filterIndex: indexToMove }));
   }
 
+  /*
   onRelationChange(event: MatRadioChange, filterId: string) {
     this.store
       .pipe(
@@ -198,6 +200,7 @@ export class TextListComponent extends BaseIndexListDirective<TextQueryParameter
         this.store.dispatch(updateFilterById({ filterId: filterId, newFilter: updatedFilter }));
       });
   }
+  */
 
   ngOnInit() {
     super.ngOnInit();

@@ -19,15 +19,12 @@ import { FormFooterComponent } from './formFooter/formFooter';
 import { FormHeaderComponent } from './formHeader/formHeader';
 import { FormPosCheckboxesComponent, FormPosCheckboxesHelpComponent } from './formPosCheckboxes/formPosCheckboxes';
 import { FormTextSearchComponent, FormTextSearchHelpComponent } from './formTextSearch/formTextSearch';
-import { FormTokenContextComponent, FormTokenContextHelpComponent } from './formTokenContext/formTokenContext';
 import {
   FormTokenComponent,
   FormTokenHelpComponent,
-  FormTokenConceptsComponent,
   FormTokenPosComponent,
   FormTokenWordComponent,
   tokenFormService,
-  FormTokenNamenComponent,
   FormTokenPositionComponent
 } from './formToken/formToken';
 import { FormWorkSearchComponent, FormWorkSearchHelpComponent } from 'app/shared/formComponents/formWorkSearch/formWorkSearch';
@@ -53,8 +50,6 @@ import { NgxSliderModule } from '@angular-slider/ngx-slider';
     FormConceptsHelpComponent,
     FormTokenComponent,
     FormTokenHelpComponent,
-    FormTokenContextComponent,
-    FormTokenContextHelpComponent,
     FormHeaderComponent,
     FormFooterComponent,
     FormAuthorComponent,
@@ -80,12 +75,8 @@ import { NgxSliderModule } from '@angular-slider/ngx-slider';
     FormFooterComponent,
     FormTokenComponent,
     FormTokenHelpComponent,
-    FormTokenConceptsComponent,
     FormTokenPosComponent,
     FormTokenWordComponent,
-    FormTokenContextComponent,
-    FormTokenContextHelpComponent,
-    FormTokenNamenComponent,
     FormTokenPositionComponent,
     FormAuthorComponent,
     FormAuthorHelpComponent,
@@ -124,9 +115,6 @@ import { NgxSliderModule } from '@angular-slider/ngx-slider';
     FormHeaderComponent,
     FormFooterComponent,
     FormTokenComponent,
-    FormTokenContextComponent,
-    FormTokenConceptsComponent,
-    FormTokenNamenComponent,
     FormTokenPositionComponent,
     FormAuthorComponent,
     FormFilterComponent

@@ -6,7 +6,7 @@ import { Account, EventManager, NavbarService } from 'app/shared/base.imports';
 import { BaseComponent } from 'app/shared/base.imports';
 
 import { SparqlJsonParser } from 'sparqljson-parse';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import {Store} from "@ngrx/store";
 

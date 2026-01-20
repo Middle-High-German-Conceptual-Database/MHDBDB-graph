@@ -4,7 +4,7 @@
             <div class="col-12 text-center">
                 <div style="display: flex; justify-content: center; align-items: center;">
                     <!-- Input Field -->
-                    <mat-form-field appearance="fill" class="example-form-field">
+                    <mat-form-field appearance="fill" class="example-form-field" (keydown.enter)="$event.preventDefault(); doSearch()">
                         <mat-label>{{ findFilterValue(searchFilterValue) }}</mat-label>
                         <input matInput [(ngModel)]="searchTerm"/>
                         <button matPrefix mat-icon-button aria-label="Clear" (click)="doSearch()">
@@ -16,7 +16,7 @@
                     </mat-form-field>
 
                     <!-- Dropdown Field -->
-                    <mat-form-field appearance="fill" class="example-form-field" style="width: 25%; margin-left: 10px;">
+                    <mat-form-field appearance="fill" class="example-form-field" style="width: 25%; margin-left: 10px;"  (keydown.enter)="$event.preventDefault(); doSearch()">
                         <mat-select [(ngModel)]="searchFilterValue">
                             <mat-option *ngFor="let value of searchFilterValues" [value]="value.id">{{value.name}}</mat-option>
                         </mat-select>

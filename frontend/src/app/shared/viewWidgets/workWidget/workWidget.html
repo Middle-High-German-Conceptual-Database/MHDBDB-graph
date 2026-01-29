@@ -22,8 +22,7 @@
             <div class="col-9">
                 <ul>
                     <li *ngFor="let sameAs of metadata.authorSameAs;">
-                        <a href="{{sameAs}}" target="_blank">{{ metadata.authorLabel }} ({{ sameAs | niceInstanceName }}
-                            )</a>
+                        <a href="{{sameAs}}" target="_blank">{{ metadata.authorLabel }} ({{ sameAs | niceInstanceName }})</a>
                     </li>
                 </ul>
             </div>
@@ -85,12 +84,17 @@
                     <a [routerLink]="['/tei', instance | textId]">
                         <i class="fa-solid fa-scroll"></i>
                     </a>
-                    <!--<a href="#">
-                        <i class="fas fa-download"></i>
-                    </a>-->
-                    <a href="#">
-                        <i style="color: green;" class="fa-solid fa-circle"></i>
+                    <a (click)="downloadTeiPdf(instance)">
+                        <i class="fa-regular fa-file-pdf"></i>
                     </a>
+                    <a (click)="downloadTeiXml(instance)">
+                        <i class="fa-regular fa-file-code"></i>
+                    </a>
+                    <!--
+                        <a href="#">
+                            <i style="color: green;" class="fa-solid fa-circle"></i>
+                        </a>
+                    -->
             </div>
         </div>
     </div>

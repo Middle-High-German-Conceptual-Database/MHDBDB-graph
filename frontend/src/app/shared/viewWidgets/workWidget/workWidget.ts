@@ -9,6 +9,8 @@ import { TextService } from '../../../text/text.service';
 import { ViewWidgetsDirective } from '../viewWidgetsDirective';
 import { WorkFilterI, WorkOptionsI, WorkQueryParameterI, WorkService } from 'app/work/work.service';
 import { WorkMetadataClass } from 'app/work/work.class';
+import { TextIdPipe } from 'app/textid.pipe';
+import { SERVER_API_URL } from 'app/app.constants';
 
 @Component({
   selector: 'dhpp-widget-work',
@@ -17,6 +19,7 @@ import { WorkMetadataClass } from 'app/work/work.class';
 })
 export class WorkWidgetComponent extends ViewWidgetsDirective<WorkQueryParameterI, WorkFilterI, WorkOptionsI, MhdbdbIdEntity, WorkService>
   implements OnInit {
+
   total: number;
   metadata: WorkMetadataClass;
   public title: string = 'Werk';
@@ -69,6 +72,31 @@ export class WorkWidgetComponent extends ViewWidgetsDirective<WorkQueryParameter
         // console.warn(error)
       });
   }
+
+  public downloadTeiPdf(instance: any) {
+    var id = new TextIdPipe().transform(instance);
+    return this.http.get('/downloadTeiPdf', {params: {'id': id}, responseType: 'blob'}).subscribe(data => {
+      var downloadURL = window.URL.createObjectURL(data);
+      var link = document.createElement('a');
+      link.href = downloadURL;
+      link.download = id + ".pdf";
+      link.click();
+      window.URL.revokeObjectURL(downloadURL);
+    });
+  }  
+
+  public downloadTeiXml(instance: any) {
+    var id = new TextIdPipe().transform(instance);
+    return this.http.get('/downloadTeiXml', {params: {'id': id}, responseType: 'blob'}).subscribe(data => {
+      var downloadURL = window.URL.createObjectURL(data);
+      var link = document.createElement('a');
+      link.href = downloadURL;
+      link.download = id + ".tei.xml";
+      link.click();
+      window.URL.revokeObjectURL(downloadURL);
+    });
+  }  
+
 }
 
 @Component({

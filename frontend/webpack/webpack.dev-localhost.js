@@ -34,6 +34,8 @@ module.exports = (options) => webpackMerge(commonConfig({
           '/showTei',
           '/showTeiAsHtml',
           '/loading',
+          '/downloadTeiXml', 
+          '/downloadTeiPdf',
         ],
         target: `http${options.tls ? 's' : ''}://localhost:8081`,
         secure: false,

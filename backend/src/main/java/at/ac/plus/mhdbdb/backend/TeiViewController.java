@@ -1,5 +1,6 @@
 package at.ac.plus.mhdbdb.backend;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,9 +11,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -36,6 +43,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.ProcessingInstruction;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
@@ -54,6 +63,9 @@ public class TeiViewController {
 
     @Value("${app.dev.frontend.additionalXmlPath}")
     private String additionalXmlPath;
+
+    @Value("${app.dev.frontend.teiPdfolder}")
+    private String teiPdfFolder;
 
     @GetMapping(value = "/showTei", produces = MediaType.APPLICATION_XML_VALUE)
     public String showTei(@RequestParam String id) {
@@ -86,6 +98,60 @@ public class TeiViewController {
             // Handle exceptions accordingly
             logger.error("Error transforming TEI", e);
             return null;
+        }
+    }
+
+    @GetMapping(value = "/downloadTeiPdf", produces = MediaType.APPLICATION_PDF_VALUE)
+    public @ResponseBody void downloadTeiPdf(@RequestParam String id, HttpServletResponse response) throws IOException {
+        String pdfFilePath = teiPdfFolder;
+        if(!pdfFilePath.endsWith("/")) {
+            pdfFilePath += "/";
+        }
+        pdfFilePath += id + ".pdf";
+
+        File file = new File(pdfFilePath);
+        if(!file.exists()) {
+            throw new FileNotFoundException("'" + pdfFilePath + "' not found.");
+        }
+
+        InputStream inputStream = new FileInputStream(file); //load the file
+        try {
+            response.setContentType(MediaType.APPLICATION_PDF_VALUE);
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + id + ".pdf\"");
+            response.setContentLength((int)file.length());
+            OutputStream outputStream = response.getOutputStream();
+            IOUtils.copy(inputStream, outputStream);
+        } catch(Exception ex) {
+            throw new IOException("Error sending PDF", ex);
+        } finally {
+            inputStream.close();            
+        }
+    }
+
+    @GetMapping(value = "/downloadTeiXml", produces = MediaType.APPLICATION_XML_VALUE)
+    public @ResponseBody void downloadTeiXml(@RequestParam String id, HttpServletResponse response) throws IOException {
+
+        String xmlFilePath = teiFolder;
+        if(!xmlFilePath.endsWith("/")) {
+            xmlFilePath += "/";
+        }
+        xmlFilePath += id + ".tei.xml";
+        File file = new File(xmlFilePath);
+        if(!file.exists()) {
+            throw new FileNotFoundException("'" + xmlFilePath + "' not found.");
+        }
+
+        InputStream inputStream = new FileInputStream(file); //load the file
+        try {
+            response.setContentType(MediaType.APPLICATION_XML_VALUE);
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + id + ".xml\"");
+            response.setContentLength((int)file.length());
+            OutputStream outputStream = response.getOutputStream();
+            IOUtils.copy(inputStream, outputStream);
+        } catch(Exception ex) {
+            throw new IOException("Error sending TEI XML", ex);
+        } finally {
+            inputStream.close();            
         }
     }
 

@@ -120,12 +120,17 @@ public class WorkController extends ControllerBase {
             .append(System.lineSeparator() + "?id dhpluso:hasExpression/dhpluso:hasInstance ?instance .")
             .append(System.lineSeparator() + "?instance rdf:type dhpluso:Electronic .")
             .append(System.lineSeparator() + "?instance rdfs:label ?instanceLabel .")
+            /*
             .append(System.lineSeparator() + "OPTIONAL {")
             .append(System.lineSeparator() + "  ?id dhpluso:hasExpression ?expression .")
             .append(System.lineSeparator() + "  ?expression rdfs:label ?expressionLabel .")
             .append(System.lineSeparator() + "}")
+             */
+            .append(System.lineSeparator() + "OPTIONAL { ?id dhpluso:hasExpression/rdfs:label ?expressionLabel . }")
+ 
             .append(System.lineSeparator() + "OPTIONAL { ?id dhpluso:genreForm/skos:prefLabel ?genreForm . }")
             .append(System.lineSeparator() + "OPTIONAL { ?id dhpluso:genreFormMainparent/skos:prefLabel ?genreFormMainParent . }")
+            // these should be fetched separately
             .append(System.lineSeparator() + "OPTIONAL {")
             .append(System.lineSeparator() + "  ?bibId bf:instanceOf ?id .")
             .append(System.lineSeparator() + "  ?bibId bf:title/bf:mainTitle ?bibTitle .")

@@ -120,7 +120,7 @@ public class WorkController extends ControllerBase {
             .append(System.lineSeparator() + "?id dhpluso:hasExpression/dhpluso:hasInstance ?instance .")
             .append(System.lineSeparator() + "?instance rdf:type dhpluso:Electronic .")
             .append(System.lineSeparator() + "?instance rdfs:label ?instanceLabel .")
-            /*
+            /* currently, only the expressionLabel is used in the workWidget 
             .append(System.lineSeparator() + "OPTIONAL {")
             .append(System.lineSeparator() + "  ?id dhpluso:hasExpression ?expression .")
             .append(System.lineSeparator() + "  ?expression rdfs:label ?expressionLabel .")

@@ -6,8 +6,8 @@ The Frontend is an Angular App written in TypeScript that (at the time of writin
 Using [nvm](https://github.com/nvm-sh/nvm) (on Windows: [nvm-windows](https://github.com/coreybutler/nvm-windows)):
 ```bash
 rm -r node_modules
-nvm install 14.21.3
-nvm use 14.21.3
+nvm install 22
+nvm use 22
 npm install
 ```
 

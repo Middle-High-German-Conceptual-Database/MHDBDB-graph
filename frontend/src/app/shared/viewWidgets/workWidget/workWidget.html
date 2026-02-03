@@ -1,4 +1,6 @@
 <div class="container">
+    <mat-spinner *ngIf="!isLoaded"></mat-spinner>
+
     <div class="row">
         <div class="col">
             <h1>{{ metadata.label }}</h1>
@@ -71,7 +73,7 @@
 
     <div class="row" style="padding-top: 25px" ng-if="metadata">
         <div class="col">
-            <h2>MHDBDB E-Texte</h2>
+            <h2>Leseansicht MHDBDB E-Text</h2>
         </div>
     </div>
 
@@ -108,7 +110,7 @@
     <div class="container" ng-if="metadata">
         <div class="row">
             <div class="col-12">
-                {{ metadata.authorLabel }}: {{ metadata.bibTitle }}, hrsg. von {{ metadata.bibAgent }}, {{ metadata.bibPlace }}, {{ metadata.bibDate }}
+                <i *ngIf="metadata.authorLabel">{{ metadata.authorLabel }}</i><i *ngIf="metadata.bibTitle">: {{ metadata.bibTitle }}</i><i *ngIf="metadata.bibAgent">, hrsg. von {{ metadata.bibAgent }}</i><i *ngIf="metadata.bibPlace">, {{ metadata.bibPlace }}</i><i *ngIf="metadata.bibDate">, {{ metadata.bibDate }}</i>
             </div>
         </div>
     </div>

@@ -19,17 +19,6 @@ services:
     volumes:
       - ./graphdb-home:/opt/graphdb/home
       - ./graphdb-init:/repository.init
-  graphdb2:
-    restart: always
-    image: ontotext/graphdb:10.3.3
-    ports:
-      - '7202:7202'
-    container_name: graphdb2
-    environment:
-      - GDB_HEAP_SIZE=24G
-    volumes:
-      - ./graphdb-home-2:/opt/graphdb/home
-      - ./graphdb-init-2:/repository.init
   backend:
     restart: always
     build:
@@ -38,6 +27,8 @@ services:
     ports:
       - '8081:8081'
     container_name: backend
+    environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-}
     volumes:
       - ../tei1:/tei
   nginx:

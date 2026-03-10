@@ -28,6 +28,7 @@ export class HistoryService<qT extends QueryParameterI<f, o>, f extends FilterI,
     }
 
     getListHistoryEntry(routeString: string): ListHistoryEntry<qT, f, o, instanceClass> {
+        console.log("HistoryService.getListHistoryEntry", {routeString: routeString});
         return this._history.find(element => element.routeString == routeString)
     }    
 }

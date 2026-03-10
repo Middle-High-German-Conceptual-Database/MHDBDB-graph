@@ -179,6 +179,7 @@ export class SparqlQuery {
   constructor(private store: Store) {}
 
   postWithProgress(url: string, data: string, headers: {[key: string]: string}): Promise<SparqlQueryResultI> {
+    console.log("SparqlQuery.postWithProgress", {url: url});
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       xhr.open('POST', url);
@@ -231,7 +232,8 @@ export class SparqlQuery {
    * @memberof SparqlQuery
    */
   query(queryString: string, endpointUrl: string = SERVER_API_SPARQL_URL): Promise<SparqlQueryResultI> {
-    console.warn("simpleQuery", queryString);
+    console.log("SparqlQuery.query", {endpointUrl: endpointUrl});
+    console.warn("SparqlQuery.query", {queryString: queryString});
 
     let headersa = {
       'Accept': 'application/json',
@@ -535,9 +537,10 @@ export abstract class MhdbdbGraphService<P extends QueryParameterI<F, O>, F exte
    * @memberof MhdbdbGraphService
    */
   public countInstances(qp: P): Promise<number> {
+    console.log("MhdbdbGraphService.countInstances", qp)
     const query = this._sparqlQuery(qp, true);
     return new Promise<number>((resolve, reject) => {
-      this._sq.query(query).then(
+      this._sq.query(query, qp.option.endpointUrl).then(
         data => {
           if (data && data.results && data.results.bindings && data.results.bindings.length >= 1) {
             resolve(data.results.bindings[0].count.value as number);
@@ -560,10 +563,11 @@ export abstract class MhdbdbGraphService<P extends QueryParameterI<F, O>, F exte
    * @memberof MhdbdbGraphService
    */
   public getInstances(qp: P): Promise<E[]> {
+    console.log("MhdbdbGraphService.getInstances", qp)
     const query = this._sparqlQuery(qp, false);
 
     return new Promise<E[]>((resolve, reject) => {
-      this._sq.query(query).then(
+      this._sq.query(query, qp.option.endpointUrl).then(
         data => {
           if (data && data['results'] && data['results']['bindings']) {
             resolve(this._jsonToObject(data['results']['bindings']));

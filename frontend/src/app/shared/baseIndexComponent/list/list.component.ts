@@ -38,6 +38,7 @@ export abstract class BaseIndexListDirective<qT extends QueryParameterI<f, o>, f
         public historyService: HistoryService<qT, f, o, c>
     ) {
         this.routeString = this.router.url
+        console.log("BaseIndexListDirective constructor", {qp: this.qp, routeString: this.routeString, this: this})
     }
 
     ////////////////////
@@ -46,6 +47,7 @@ export abstract class BaseIndexListDirective<qT extends QueryParameterI<f, o>, f
 
     public first() {
         if (!this.isLoading) {
+            console.log("BaseIndexListDirective first", {qp: this.qp})
             this.isLoading = true;
             this.qp.offset = 0
             this.instances = []
@@ -70,12 +72,12 @@ export abstract class BaseIndexListDirective<qT extends QueryParameterI<f, o>, f
                 this.isLoading = false;
                 console.warn(error)
             })
-
         }
     }
 
     public next() {
         if (!this.isLoadingNext) {
+            console.log("BaseIndexListDirective next", {qp: this.qp})
             this.isLoadingNext = true;
             this.qp.offset = this.qp.offset + this.qp.limit;
             this.service.getInstances(this.qp)

@@ -19,7 +19,8 @@ import { DatePrecision } from 'app/shared/baseIndexComponent/baseindexcomponent.
 import { Store, select } from '@ngrx/store';
 import { selectLanguage } from 'app/store/language.reducer';
 import { Utils } from 'app/shared/utils';
-import { SERVER_API_URL_WORKS } from 'app/app.constants';
+import { SERVER_API_URL, SERVER_API_URL_WORKS } from 'app/app.constants';
+import _default from '@angular/common/locales/en';
 
 export interface WorkQueryParameterI extends QueryParameterI<WorkFilterI, WorkOptionsI> {}
 
@@ -275,52 +276,52 @@ export class WorkService extends MhdbdbIdLabelEntityService<WorkQueryParameterI,
     if (qp.filter.isAuthorIdsActive && qp.filter.authorIds.length > 0) {
       const authorIds = qp.filter.authorIds.map(id => `<${id}>`).join(' ');
       authorFilter = `{
-        ?id dhpluso:contribution/dhpluso:agent ?authorIdA .
+        ?idA dhpluso:contribution/dhpluso:agent ?authorIdA .
         ?authorIdA rdfs:label ?authorLabelA .
         VALUES ?authorIdA { ${authorIds} } 
     }`;
     }
 
-    let instanceSelector = `?idA a dhpluso:Text ;
-                                    dhpluso:hasExpression ?textA .
-                                ?textA a dhpluso:Text .
-                                ?electronic dhpluso:instanceOf ?textA ;
-                                    a dhpluso:Electronic .
-                                   ${authorFilter}
-                                {
-                                    ?textA dhpluso:hasInstance ?instanceA
-                                }
-                                ?idA rdfs:label ?labelA .
-                                
-                                filter(langMatches( lang(?authorLabelA), "${qp.lang}" ))
-                                filter(langMatches( lang(?labelA), "${qp.lang}" ))
-                                FILTER regex(?labelA, "${qp.filter.label}", "i")
-                                `;
+    let instanceSelector = `
+      ?idA a dhpluso:Text ;
+        dhpluso:hasExpression ?textA .
+      ?textA a dhpluso:Text .
+      ?electronic dhpluso:instanceOf ?textA ;
+        a dhpluso:Electronic .
+      ${authorFilter}
+      {
+          ?textA dhpluso:hasInstance ?instanceA
+      }
+      ?idA rdfs:label ?labelA .
+      
+      filter(langMatches( lang(?authorLabelA), "${qp.lang}" ))
+      filter(langMatches( lang(?labelA), "${qp.lang}" ))
+      FILTER regex(?labelA, "${qp.filter.label}", "i")
+      `;
 
     let labelQuery = '';
     labelQuery = instanceSelector;
 
     let instanceSelect = '';
 
-    instanceSelect = ` DISTINCT (SAMPLE(?idA) AS ?id) (SAMPLE(?labelA) as ?label) (?textA AS ?text) 
-                (SAMPLE(?instanceA) AS ?instance) (SAMPLE(?authorLabelA) AS ?authorLabel) (SAMPLE(?authorIdA) AS ?authorId)
-                WHERE {
-                    ${labelQuery}
-                }
-                GROUP BY ?textA
-                ORDER BY ASC(?label)
-            `;
+    instanceSelect = ` 
+      DISTINCT (SAMPLE(?idA) AS ?id) (SAMPLE(?labelA) as ?label) (?textA AS ?text) 
+        (SAMPLE(?instanceA) AS ?instance) (SAMPLE(?authorLabelA) AS ?authorLabel) (SAMPLE(?authorIdA) AS ?authorId)
+      WHERE {
+        ${labelQuery}
+      }
+      GROUP BY ?textA
+      ORDER BY ASC(?label)
+    `;
 
     let q = '';
     if (countResults) {
-      q = ` (count(*) as ?count)
-                where {
-                    {
-                        SELECT ${instanceSelect}
-                    }
-                }
-
-            `;
+      q = ` 
+      (count(*) as ?count)
+      WHERE {
+        SELECT ${instanceSelect}
+      }
+    `;
     } else {
       q = instanceSelect;
     }
@@ -331,17 +332,16 @@ export class WorkService extends MhdbdbIdLabelEntityService<WorkQueryParameterI,
   // MhdbdbGraphService concrete implementation
   // TODO: we can catch queries that are implemented in the API like this and have all others use MhdbdbGraphService
   public countInstances(qp: WorkQueryParameterI): Promise<number> {
-    console.log("WorkService countInstances")
-    console.warn("WorkService countInstances params", qp)
+    console.log("WorkService.countInstances", qp.filter) 
     return super.countInstances(qp)
     //return new Promise<number>((resolve) => {resolve(0);});
   }
 
   public getInstances(qp: WorkQueryParameterI): Promise<WorkClass[]> {
-    console.log("WorkService getInstances")
+    //qp.option.endpointUrl = SERVER_API_URL_WORKS;
+    console.log("WorkService getInstances", qp.filter)
     //return super.getInstances(qp)
     // =========== START super.getInstances(qp) COPIED, but different endpoint
-    console.warn("WorkService getInstances params", qp)
     const query = this._sparqlQuery(qp, false);
     console.warn("WorkService getInstances query", query)
 

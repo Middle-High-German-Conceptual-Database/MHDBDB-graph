@@ -332,18 +332,36 @@ export class WorkService extends MhdbdbIdLabelEntityService<WorkQueryParameterI,
   // MhdbdbGraphService concrete implementation
   // TODO: we can catch queries that are implemented in the API like this and have all others use MhdbdbGraphService
   public countInstances(qp: WorkQueryParameterI): Promise<number> {
+    //since we're calling 'real' endpoints for the WorkController, this needs to be set for every call
+    //qp.option.endpointUrl = `${this._defaultQp.option.endpointUrl}/query`
+    //return super.countInstances(qp)
     console.log("WorkService.countInstances", qp.filter) 
-    return super.countInstances(qp)
-    //return new Promise<number>((resolve) => {resolve(0);});
+    const query = this._sparqlQuery(qp, true);
+    console.warn("WorkService.getInstances query", query)
+
+    return new Promise<number>((resolve, reject) => {
+      this._sq.query(query, `${this._defaultQp.option.endpointUrl}/query`).then(
+        data => {
+          if (data && data.results && data.results.bindings && data.results.bindings.length >= 1) {
+            resolve(data.results.bindings[0].count.value as number);
+          } else {
+            resolve(0);
+          }
+        },
+        error => {
+          reject(error);
+        }
+      );
+    });
   }
 
   public getInstances(qp: WorkQueryParameterI): Promise<WorkClass[]> {
-    //qp.option.endpointUrl = SERVER_API_URL_WORKS;
-    console.log("WorkService getInstances", qp.filter)
+    //since we're calling 'real' endpoints for the WorkController, this needs to be set for every call
+    //qp.option.endpointUrl = `${this._defaultQp.option.endpointUrl}/query`
     //return super.getInstances(qp)
-    // =========== START super.getInstances(qp) COPIED, but different endpoint
+    console.log("WorkService.getInstances", qp.filter)
     const query = this._sparqlQuery(qp, false);
-    console.warn("WorkService getInstances query", query)
+    console.warn("WorkService.getInstances query", query)
 
     return new Promise<WorkClass[]>((resolve, reject) => {
       this._sq.query(query, `${this._defaultQp.option.endpointUrl}/query`).then(
@@ -358,6 +376,5 @@ export class WorkService extends MhdbdbIdLabelEntityService<WorkQueryParameterI,
         }
       );
     });    
-    // =========== STOP super.getInstances(qp) COPIED
   }
 }

@@ -537,10 +537,10 @@ export abstract class MhdbdbGraphService<P extends QueryParameterI<F, O>, F exte
    * @memberof MhdbdbGraphService
    */
   public countInstances(qp: P): Promise<number> {
-    console.log("MhdbdbGraphService.countInstances", qp)
+    console.log(`MhdbdbGraphService.countInstances for ${this.constructor.name}`, qp)
     const query = this._sparqlQuery(qp, true);
     return new Promise<number>((resolve, reject) => {
-      this._sq.query(query, qp.option.endpointUrl).then(
+      this._sq.query(query).then(
         data => {
           if (data && data.results && data.results.bindings && data.results.bindings.length >= 1) {
             resolve(data.results.bindings[0].count.value as number);
@@ -563,7 +563,7 @@ export abstract class MhdbdbGraphService<P extends QueryParameterI<F, O>, F exte
    * @memberof MhdbdbGraphService
    */
   public getInstances(qp: P): Promise<E[]> {
-    console.log("MhdbdbGraphService.getInstances", qp)
+    console.log(`MhdbdbGraphService.getInstances for ${this.constructor.name}`, qp)
     const query = this._sparqlQuery(qp, false);
 
     return new Promise<E[]>((resolve, reject) => {

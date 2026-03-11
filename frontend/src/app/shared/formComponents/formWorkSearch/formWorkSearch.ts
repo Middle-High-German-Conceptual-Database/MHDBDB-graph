@@ -20,6 +20,7 @@ export class FormWorkSearchComponent<qT extends QueryParameterI<f, o>, f extends
     }
 
     initHtmlForm(filterMap: f) {
+        console.log("FormWorkSearchComponent.initHtmlForm", {filter: filterMap});
         this.form = new FormGroup({
             label: new FormControl(filterMap.label),
             isLabelActive: new FormControl(filterMap.isLabelActive),
@@ -27,6 +28,7 @@ export class FormWorkSearchComponent<qT extends QueryParameterI<f, o>, f extends
     }
 
     loadFilter(filterMap: f) {
+        console.log("FormWorkSearchComponent.loadFilter", {filter: filterMap});
         if (this.form.get('isLabelActive').value != filterMap.isLabelActive) {
             this.form.patchValue({
                 isLabelActive: filterMap.isLabelActive,
@@ -41,6 +43,7 @@ export class FormWorkSearchComponent<qT extends QueryParameterI<f, o>, f extends
     }
 
     onValueChanges(value) {
+        console.log("FormWorkSearchComponent.onValueChanges", {value: value});
         let changed:boolean = false
         if (this.qp.filter.isLabelActive != value.isLabelActive) {
             this.qp.filter.isLabelActive = value.isLabelActive

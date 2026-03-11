@@ -41,7 +41,7 @@ export class ListHistoryEntry
         this._defaultQp = JSON.parse(JSON.stringify(qp))
         this.routeString = routeString
 
-        this._qp = (JSON.parse(JSON.stringify(qp)))
+        this._qp = JSON.parse(JSON.stringify(qp))
         this._qpSubject = new BehaviorSubject(JSON.parse(JSON.stringify(qp)))
         this.qp = this._qpSubject.asObservable()
 
@@ -66,14 +66,18 @@ export class ListHistoryEntry
     // qp
 
     public setQp(qp: P) {
+        console.log("ListHistoryEntry.setQp", {qp: qp});
         this._qp = JSON.parse(JSON.stringify(qp))
     }
 
     public getQp(): P {
-        return this._qpSubject.getValue()
+        const qp = this._qpSubject.getValue();
+        console.log("ListHistoryEntry.getQp", {qp: qp});
+        return qp;
     }
 
     public update() {
+        console.log("ListHistoryEntry.update", {qp: this._qp});
         this.addQpToHistory(this._qp)
         this._qpSubject.next(JSON.parse(JSON.stringify(this._qp)))
     }

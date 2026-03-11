@@ -47,24 +47,22 @@ export class WorkListComponent extends BaseIndexListDirective<WorkQueryParameter
         super(router, route, locationService, http, service, history);
 
         this.store.pipe(select(state => state)).subscribe(state => {
-            // console.log(state);
+            console.log("WorkListComponent subscribed with state", state);
             // this.qp.filter.isAuthorIdsActive = state["generalFilter"].isAuthorActive;
             if (state["generalFilter"].authors && state["generalFilter"].authors.length > 0) {
                 this.qp.filter.isAuthorIdsActive = true;
                 this.qp.filter.authorIds = state["generalFilter"].authors
             } 
-            // console.log(this.qp);
-        }
-        );
-
+            console.log("WorkListComponent subscribed yields", this.qp);
+        });
     }
 
     ngOnInit(): void {
         super.ngOnInit();
-
     }
 
     reset() {
+        console.log("WorkListComponent reset");
         this.store.dispatch(reset());
         this.resetEventSubject.next();
         this.isLoading = false;

@@ -21,6 +21,7 @@ export class FormFooterComponent<qT extends QueryParameterI<f, o>, f extends Fil
   notifier = new Subject()
   public history: HistoryEntryStatic<qT, f, o>[]
   private readonly _historySize: number
+  private qp: qT;
 
   constructor(
     public fb: FormBuilder,
@@ -47,7 +48,8 @@ export class FormFooterComponent<qT extends QueryParameterI<f, o>, f extends Fil
   }
 
   search() {
-    this.he.update()
+    console.log("FormFooterComponent.search", {qp: this.qp}); //hopefully, that works
+    this.he.update(this.qp)
   }
 
   subscribeForm(): Subscription {

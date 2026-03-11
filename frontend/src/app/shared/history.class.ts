@@ -76,17 +76,17 @@ export class ListHistoryEntry
         return qp;
     }
 
-    public update() {
-        console.log("ListHistoryEntry.update", {qp: this._qp});
+    public update(qp: P) {
+        console.log("ListHistoryEntry.update", {qp: qp});
+        this._qp = JSON.parse(JSON.stringify(qp))
+        this.setQp(this._qp)
         this.addQpToHistory(this._qp)
         this._qpSubject.next(JSON.parse(JSON.stringify(this._qp)))
     }
 
     public resetQp() {
-        this._qp = JSON.parse(JSON.stringify(this._defaultQp))
-        this.setQp(this._qp)
         this.resetInstances()
-        this.update()
+        this.update(JSON.parse(JSON.stringify(this._defaultQp)))
     }
 
     // instances

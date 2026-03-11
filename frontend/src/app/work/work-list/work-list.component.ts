@@ -75,7 +75,7 @@ export class WorkListComponent extends BaseIndexListDirective<WorkQueryParameter
 
     search() {
         super.first();
-        this.he.update();
+        this.he.update(this.qp);
     }
 
     scrollToBottom(): void {

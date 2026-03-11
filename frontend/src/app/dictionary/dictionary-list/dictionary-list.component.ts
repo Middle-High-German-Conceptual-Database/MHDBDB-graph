@@ -54,6 +54,6 @@ export class DictionaryListComponent extends BaseIndexListDirective<DictionaryQu
     }
 
     search() {
-        this.he.update();
+        this.he.update(this.qp);
     }
 }

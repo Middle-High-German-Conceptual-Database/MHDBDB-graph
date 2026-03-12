@@ -55,7 +55,7 @@
                                     <mat-chip-list #chipList aria-label="Author selection">
                                         <mat-chip *ngFor="let authorId of form.get('filterAuthors').value | keyvalue" [selectable]="selectable"
                                                   [removable]="removable" (removed)="removeAuthor(authorId.key)">
-                                            {{ findLabelById(authorId.key) }} <!-- using a method to get label by id -->
+                                            {{ findAuthorById(authorId.key) }} <!-- using a method to get label by id -->
                                             <mat-icon matChipRemove *ngIf="removable"><i class="fas fa-times"></i></mat-icon>
                                         </mat-chip>
                                     </mat-chip-list>
@@ -95,7 +95,7 @@
                                     <mat-chip-list #chipList aria-label="Work selection">
                                         <mat-chip *ngFor="let workId of form.get('filterWorks').value | keyvalue" [selectable]="selectable"
                                                   [removable]="removable" (removed)="removeWork(workId.key)">
-                                            {{ findLabelById(workId.key) }} <!-- using a method to get label by id -->
+                                            {{ findWorkById(workId.key) }} <!-- using a method to get label by id -->
                                             <mat-icon matChipRemove *ngIf="removable"><i class="fas fa-times"></i></mat-icon>
                                         </mat-chip>
                                     </mat-chip-list>
@@ -150,7 +150,7 @@
                                     <mat-chip-list #chipList aria-label="Work selection">
                                         <mat-chip *ngFor="let workId of form.get('filterWorks').value | keyvalue" [selectable]="selectable"
                                                   [removable]="removable" (removed)="removeWork(workId.key)">
-                                            {{ findLabelById(workId.key) }} <!-- using a method to get label by id -->
+                                            {{ findWorkById(workId.key) }} <!-- using a method to get label by id -->
                                             <mat-icon matChipRemove *ngIf="removable"><i class="fas fa-times"></i></mat-icon>
                                         </mat-chip>
                                     </mat-chip-list>

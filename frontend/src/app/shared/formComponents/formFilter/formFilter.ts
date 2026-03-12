@@ -46,8 +46,6 @@ export class FormFilterComponent<qT extends QueryParameterI<f, o>, f extends Fil
 
   filterMap;
 
-  @Input() workFilter = "true";
-  
   authorList: PersonClass[] = [];
   workList: WorkClass[] = [];
   seriesList: SeriesClass[] = [];
@@ -127,7 +125,7 @@ export class FormFilterComponent<qT extends QueryParameterI<f, o>, f extends Fil
 
     this.filteredAuthors = this.authorCtrl.valueChanges.pipe(
       startWith(null),
-      map((work: string | null) => (work ? this._filterAuthor(work) : this.authorList.slice()))
+      map((author: string | null) => (author ? this._filterAuthor(author) : this.authorList.slice()))
     );
 
   }
@@ -175,12 +173,13 @@ export class FormFilterComponent<qT extends QueryParameterI<f, o>, f extends Fil
 
     this.filterAuthors = new FormGroup({});
     this.personService.getInstances(qp).then(data => {
+      console.log("FormFilterComponent authorList got ", data);
       this.authorList = data;
-      this.authorList.forEach(work => {
-        this.authorLabels.push(`${work.label.trim()}`);
-        if (this.filterMap && this.filterMap.authors && this.filterMap.authors.includes(work.id)) {
-          // Use work id as control name instead of label
-          this.filterAuthors.addControl(work.id, new FormControl(true));
+      this.authorList.forEach(author => {
+        this.authorLabels.push(`${author.label.trim()}`);
+        if (this.filterMap && this.filterMap.authors && this.filterMap.authors.includes(author.id)) {
+          // Use author URI as control name instead of label
+          this.filterAuthors.addControl(author.id, new FormControl(true));
         }
       });
     });
@@ -209,6 +208,7 @@ export class FormFilterComponent<qT extends QueryParameterI<f, o>, f extends Fil
       )
       .subscribe(tokenFilter => {
         let modifiedFilter = { ...tokenFilter };
+        console.log("FormFilterComponent.filter$ subscribed", {tokenFilter: tokenFilter});
         // iterate over works and series and add label to filter instead of id
         if (tokenFilter.works) {
           modifiedFilter.works = tokenFilter.works.map(id => {
@@ -219,8 +219,13 @@ export class FormFilterComponent<qT extends QueryParameterI<f, o>, f extends Fil
 
         if (tokenFilter.authors) {
           modifiedFilter.authors = tokenFilter.authors.map(id => {
-            let work = this.authorList.find(work => work.id == id);
-            return work ? work.label : '';
+            let author = this.authorList.find(author => author.id == id);
+            console.log("FormFilterComponent.filter$ author", {author: author, authors: this.authors});
+            if(author && !this.authors.contains(author.id)) {
+              console.log("FormFilterComponent.filter$ adding author", author);
+              this.authors.addControl(author.id, new FormControl(true));
+            }
+            return author ? author.label : '';
           });
         }
 
@@ -240,11 +245,12 @@ export class FormFilterComponent<qT extends QueryParameterI<f, o>, f extends Fil
 
     this.form.valueChanges
       .pipe(
-        debounceTime(2000),
+        debounceTime(100),
         distinctUntilChanged(),
         takeUntil(this.destroy$)
       )
       .subscribe(value => {
+        console.log("FormFilterComponent.form.valueChanges subscribed", {value: value});
         if (this.filterMap.isSeriesFilterActive != value.isSeriesFilterActive) {
           this.store.dispatch(setSeriesFilterActive({ isSeriesFilterActive: value.isSeriesFilterActive }));
         }
@@ -321,8 +327,9 @@ export class FormFilterComponent<qT extends QueryParameterI<f, o>, f extends Fil
   }
 
   private _filterAuthor(value: string): PersonClass[] {
+    console.log("FormFilterComponent._filterAuthor", value)
     const filterValue = value.toLowerCase();
-    return this.authorList.filter(work => work.label.toLowerCase().includes(filterValue));
+    return this.authorList.filter(author => author.label.toLowerCase().includes(filterValue));
   }
 
   get concepts() {
@@ -362,11 +369,13 @@ export class FormFilterComponent<qT extends QueryParameterI<f, o>, f extends Fil
   }
 
   findAuthorById(id: string): string {
-    const workItem = this.authorList.find(work => work.id === id);
-    return workItem ? `${workItem.label}` : id;
+    console.log("FormFilterComponent.findAuthorById", id)
+    const authorItem = this.authorList.find(author => author.id === id);
+    return authorItem ? `${authorItem.label}` : id;
   }
 
-  findLabelById(id: string): string {
+  findWorkById(id: string): string {
+    console.log("FormFilterComponent.findWorkById", id)
     const workItem = this.workList.find(work => work.id === id);
     return workItem ? `${workItem.label} (${workItem.authorLabel})` : id;
   }
@@ -386,15 +395,18 @@ export class FormFilterComponent<qT extends QueryParameterI<f, o>, f extends Fil
   }
 
   selectedAuthor(event: MatAutocompleteSelectedEvent): void {
-    const work = this.authorList.find(w => w.label === event.option.viewValue);
-    if (work) {
-      this.authors.addControl(work.id, new FormControl(true));
+    console.log("FormFilterComponent.selectedAuthor", event)
+    const author = this.authorList.find(w => w.label === event.option.viewValue);
+    if (author) {
+      this.authors.addControl(author.id, new FormControl(true));
       this.authorInput.nativeElement.value = '';
       this.authorCtrl.setValue(null);
+      this.authors.updateValueAndValidity();
     }
   }
 
   removeAuthor(conceptLabel: string): void {
+    console.log("FormFilterComponent.removeAuthor", conceptLabel)
     this.authors.removeControl(conceptLabel);
     this.authors.updateValueAndValidity();
   }
@@ -404,6 +416,7 @@ export class FormFilterComponent<qT extends QueryParameterI<f, o>, f extends Fil
     for(let key in this.authors.controls) {
       keys.push(key);
     }
+    console.log("FormFilterComponent.resetAuthors", {authors: keys})
     keys.forEach(k => this.authors.removeControl(k));
     this.authors.updateValueAndValidity();
   }

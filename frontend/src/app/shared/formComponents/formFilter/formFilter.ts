@@ -131,7 +131,9 @@ export class FormFilterComponent<qT extends QueryParameterI<f, o>, f extends Fil
   }
 
   ngOnInit() {
-    this.filterMap = { ...defaultFilterClassExtended } as FilterClassExtendedI;
+    //this.filterMap = { ...defaultFilterClassExtended } as FilterClassExtendedI;
+    this.store.select(selectFilterClassExtended).forEach(val => this.filterMap = val as FilterClassExtendedI);
+    console.log("FormFilterComponent.ngOnInit filterMap initially", {filterMap: this.filterMap, authors: this.filterMap.authors});
 
     this.filterSeriesCheckboxes = new FormGroup({});
     this.seriesList.forEach(item => {
@@ -173,7 +175,7 @@ export class FormFilterComponent<qT extends QueryParameterI<f, o>, f extends Fil
 
     this.filterAuthors = new FormGroup({});
     this.personService.getInstances(qp).then(data => {
-      console.log("FormFilterComponent authorList got ", data);
+      console.log("FormFilterComponent.ngOnInit authorList got ", data);
       this.authorList = data;
       this.authorList.forEach(author => {
         this.authorLabels.push(`${author.label.trim()}`);
@@ -182,6 +184,7 @@ export class FormFilterComponent<qT extends QueryParameterI<f, o>, f extends Fil
           this.filterAuthors.addControl(author.id, new FormControl(true));
         }
       });
+      console.log("FormFilterComponent.ngOnInit filterMap check", {filterMap: this.filterMap, authorList: this.authorList});
     });
 
     this.form = new FormGroup({
@@ -210,29 +213,30 @@ export class FormFilterComponent<qT extends QueryParameterI<f, o>, f extends Fil
         let modifiedFilter = { ...tokenFilter };
         console.log("FormFilterComponent.filter$ subscribed", {tokenFilter: tokenFilter});
         // iterate over works and series and add label to filter instead of id
-        if (tokenFilter.works) {
+        if (tokenFilter.works && this.workList && this.workList.length > 0) {
           modifiedFilter.works = tokenFilter.works.map(id => {
             let work = this.workList.find(work => work.id == id);
-            return work ? work.label : '';
+            return work ? work.label : id;
           });
         }
 
-        if (tokenFilter.authors) {
+        // this is only useful AFTER the authorList has been filled 
+        if (tokenFilter.authors && this.authorList && this.authorList.length > 0) {
           modifiedFilter.authors = tokenFilter.authors.map(id => {
             let author = this.authorList.find(author => author.id == id);
-            console.log("FormFilterComponent.filter$ author", {author: author, authors: this.authors});
+            console.log("FormFilterComponent.filter$ author", {id: id, authorList: this.authorList, author: author, authors: this.authors});
             if(author && !this.authors.contains(author.id)) {
               console.log("FormFilterComponent.filter$ adding author", author);
               this.authors.addControl(author.id, new FormControl(true));
             }
-            return author ? author.label : '';
+            return author ? author.label : id; // #20 if the author is not yet loaded (see above), this will remove it from the list
           });
         }
 
-        if (tokenFilter.series) {
+        if (tokenFilter.series && this.seriesList && this.seriesList.length > 0) {
           modifiedFilter.series = tokenFilter.series.map(id => {
             let series = this.seriesList.find(series => series.id == id);
-            return series ? series.label : '';
+            return series ? series.label : id;
           });
         }
 
@@ -241,6 +245,8 @@ export class FormFilterComponent<qT extends QueryParameterI<f, o>, f extends Fil
         this.form.enable({ emitEvent: false }); // re-enable form after patching values
 
         this.filterMap = { ...modifiedFilter }; // update filterMap after patching the form
+        console.log("FormFilterComponent.filter$ filterMap now", this.filterMap);
+
       });
 
     this.form.valueChanges
